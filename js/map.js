@@ -204,7 +204,7 @@
                 "price": 57970,
                 "type": "bungalo",
                 "rooms": 2,
-                "guests": 5,
+                "guests": 21,
                 "checkin": "13:00",
                 "checkout": "14:00",
                 "features": ["wifi", "parking", "conditioner"],
@@ -237,8 +237,7 @@
 
     similarPinElements.appendChild(fragmentOfPin);
 
-
-    var getTypeOfAccomodation = function (cardElement, type) {
+    var getTypeOfAccomodation = function (cardTemplate, type) {
         var typeOfAccomodation = "";
 
         switch (type) {
@@ -259,7 +258,53 @@
                 break;
         }
 
-        return cardElement.querySelector(".popup__type").textContent = typeOfAccomodation;
+        return cardTemplate.querySelector(".popup__type").textContent = typeOfAccomodation;
+    };
+
+    var getFeaturesList = function (card, cardTemplate) {
+        var featuresList = cardTemplate.querySelector(".popup__features");
+
+        for (var i = featuresList.children.length - 1; i >= 0; i--) {
+            var child = featuresList.children[i];
+            child.parentElement.removeChild(child);
+        }
+
+        for (var j = 0; j < card.offer.features.length; j++) {
+            var featureElement = document.createElement("li");
+            featureElement.classList.add("feature");
+            featureElement.classList.add("feature--" + card.offer.features[j]);
+            featuresList.appendChild(featureElement);
+        }
+    };
+
+    var getPhotosList = function (card, cardTemplate) {
+        var photosList = cardTemplate.querySelector(".popup__pictures");
+        var similarPhotoElement = photosList.querySelector("li");
+        photosList.removeChild(photosList.querySelector("li"));
+        var photosFragment = document.createDocumentFragment();
+
+        for (var k = 0; k < card.offer.photos.length; k++) {
+            var photoElement = similarPhotoElement.cloneNode(true);
+            photoElement.querySelector("img").setAttribute("src", card.offer.photos[k]);
+            photosFragment.appendChild(photoElement);
+        }
+        photosList.appendChild(photosFragment);
+    };
+
+    var getPluralForm = function (number, wordsForms) {
+        number = Math.abs(number) % 100;
+        var number1 = number % 10;
+
+        if (number > 10 && number < 20) {
+            return wordsForms[2];
+        }
+        if (number1 > 1 && number1 < 5) {
+            return wordsForms[1];
+        }
+        if (number1 === 1) {
+            return wordsForms[0];
+        }
+        return wordsForms[2];
     };
 
     var renderCard = function (card) {
@@ -271,26 +316,17 @@
 
         getTypeOfAccomodation(cardElement, card.offer.type);
 
-
-        //  ROOMS / GUESTS
-        // cardElement.querySelector(".popup__text--capacity").textContent = card.offer.rooms + " комнат" + r + " для " + card.offer.guests + " гост" + g;
-        cardElement.querySelector(".popup__text--capacity").textContent = card.offer.rooms + " комнаты для " + card.offer.guests + " гостей";
-
+        cardElement.querySelector(".popup__text--capacity").textContent = card.offer.rooms + ' ' + getPluralForm(card.offer.rooms, ['комната', 'комнаты', 'комнат']) + " для " + card.offer.guests + ' ' + getPluralForm(card.offer.guests, ['гостя', 'гостей', 'гостей']);
 
         cardElement.querySelector(".popup__text--time").textContent = "Заезд после " + card.offer.checkin + ", выезд до " + card.offer.checkout;
 
-
-        //  FEATURES
-
+        getFeaturesList(card, cardElement);
 
         cardElement.querySelector(".popup__description").textContent = card.offer.description;
 
-
-        //  PHOTOS
-
-
         cardElement.querySelector(".popup__avatar").setAttribute("src", card.author.avatar);
 
+        getPhotosList(card, cardElement);
 
         return cardElement;
     };
