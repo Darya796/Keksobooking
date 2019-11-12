@@ -17,7 +17,7 @@
     //     return Math.round(randomNumber);
     // };
 
-    var similarAds = [
+    var SIMILAR_ADS = [
         {
             "author": {
                 "avatar": "img/avatars/user01.png"
@@ -231,11 +231,11 @@
 
     var fragmentOfPin = document.createDocumentFragment();
 
-    for (var i = 0; i < similarAds.length; i++) {
-        fragmentOfPin.appendChild(renderPin(similarAds[i]));
+    for (let i = 0; i < SIMILAR_ADS.length; i++) {
+        fragmentOfPin.appendChild(renderPin(SIMILAR_ADS[i]));
     }
 
-    similarPinElements.appendChild(fragmentOfPin);
+    // similarPinElements.appendChild(fragmentOfPin);
 
     var getTypeOfAccomodation = function (cardTemplate, type) {
         var typeOfAccomodation = "";
@@ -264,15 +264,15 @@
     var getFeaturesList = function (card, cardTemplate) {
         var featuresList = cardTemplate.querySelector(".popup__features");
 
-        for (var i = featuresList.children.length - 1; i >= 0; i--) {
+        for (let i = featuresList.children.length - 1; i >= 0; i--) {
             var child = featuresList.children[i];
             child.parentElement.removeChild(child);
         }
 
-        for (var j = 0; j < card.offer.features.length; j++) {
+        for (let i = 0; i < card.offer.features.length; i++) {
             var featureElement = document.createElement("li");
             featureElement.classList.add("feature");
-            featureElement.classList.add("feature--" + card.offer.features[j]);
+            featureElement.classList.add("feature--" + card.offer.features[i]);
             featuresList.appendChild(featureElement);
         }
     };
@@ -283,9 +283,9 @@
         photosList.removeChild(photosList.querySelector("li"));
         var photosFragment = document.createDocumentFragment();
 
-        for (var k = 0; k < card.offer.photos.length; k++) {
+        for (let i = 0; i < card.offer.photos.length; i++) {
             var photoElement = similarPhotoElement.cloneNode(true);
-            photoElement.querySelector("img").setAttribute("src", card.offer.photos[k]);
+            photoElement.querySelector("img").setAttribute("src", card.offer.photos[i]);
             photosFragment.appendChild(photoElement);
         }
         photosList.appendChild(photosFragment);
@@ -332,10 +332,78 @@
     };
 
     var fragmentOfCard = document.createDocumentFragment();
+    //
+    // for (let i = 0; i < SIMILAR_ADS.length; i++) {
+    //     fragmentOfCard.appendChild(renderCard(SIMILAR_ADS[i]));
+    // }
 
-    for (var j = 0; j < similarAds.length; j++) {
-        fragmentOfCard.appendChild(renderCard(similarAds[j]));
-    }
+    // similarCardsElements.insertBefore(fragmentOfCard, similarCardsElements.querySelector(".map__filters-container"));
 
-    similarCardsElements.insertBefore(fragmentOfCard, similarCardsElements.querySelector(".map__filters-container"));
+    /*------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------*/
+
+    var startScreenPin = document.querySelector(".map__pin--main");
+    var noticeForm = document.querySelector(".notice__form");
+    var formFieldset = noticeForm.querySelectorAll("fieldset");
+    var AdressField = noticeForm.querySelector("#address");
+
+    /*------------------------------------------------------------*/
+    var PIN_SIZE = {
+        "width": startScreenPin.offsetWidth,
+        "height": startScreenPin.offsetHeight,
+        "startLocation": {
+            "x": startScreenPin.offsetLeft + (startScreenPin.offsetWidth / 2),
+            "y": startScreenPin.offsetTop + (startScreenPin.offsetHeight / 2)
+        }
+    };
+
+    AdressField.value = PIN_SIZE.startLocation.x + ", " + PIN_SIZE.startLocation.y;
+    /*------------------------------------------------------------*/
+    var pinButtons;
+
+    startScreenPin.addEventListener("mouseup", function () {
+        similarCardsElements.classList.remove("map--faded");
+        noticeForm.classList.remove("notice__form--disabled");
+        for (let i = 0; i < formFieldset.length; i++) {
+            formFieldset[i].removeAttribute("disabled");
+        }
+
+        similarPinElements.appendChild(fragmentOfPin);
+
+        /*-----------------------------------------*/
+        AdressField.value = (startScreenPin.offsetLeft + (startScreenPin.offsetWidth / 2)) + ", " + (startScreenPin.offsetTop + startScreenPin.offsetWidth + 17);
+
+        pinButtons = similarPinElements.querySelectorAll(".map__pin");
+
+        for (let i = 1; i < pinButtons.length; i++) {
+            pinButtons[i].addEventListener("click", showCard);
+        }
+    });
+
+
+    var showCard = function () {
+        var allAds = similarCardsElements.querySelectorAll(".map__card");
+        for(let k = 0; k < allAds.length; k++) {
+            similarCardsElements.removeChild(allAds[k]);
+        }
+
+
+        let clickedPinLocation = this.offsetLeft + ", " + this.offsetTop;
+
+        for (let j = 0; j < SIMILAR_ADS.length; j++) {
+            let location = SIMILAR_ADS[j].location.x + ", " + SIMILAR_ADS[j].location.y;
+
+            if (location === clickedPinLocation) {
+                fragmentOfCard.appendChild(renderCard(SIMILAR_ADS[j]));
+            }
+
+        }
+
+        similarCardsElements.insertBefore(fragmentOfCard, similarCardsElements.querySelector(".map__filters-container"));
+    };
+
+    /*------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------*/
+
+
 })();
