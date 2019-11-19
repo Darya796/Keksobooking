@@ -11,7 +11,7 @@
     //     let randomNumber = min + Math.random() * (max - min + 1);
     //     return Math.round(randomNumber);
     // };
-    //
+
     // var getRandomRooms = function (min, max) {
     //     let randomNumber = min + Math.random() * (max - min + 1);
     //     return Math.round(randomNumber);
@@ -231,9 +231,9 @@
 
     var fragmentOfPin = document.createDocumentFragment();
 
-    for (let i = 0; i < SIMILAR_ADS.length; i++) {
-        fragmentOfPin.appendChild(renderPin(SIMILAR_ADS[i]));
-    }
+    // for (let i = 0; i < SIMILAR_ADS.length; i++) {
+    //     fragmentOfPin.appendChild(renderPin(SIMILAR_ADS[i]));
+    // }
 
     // similarPinElements.appendChild(fragmentOfPin);
 
@@ -332,7 +332,7 @@
     };
 
     var fragmentOfCard = document.createDocumentFragment();
-    //
+
     // for (let i = 0; i < SIMILAR_ADS.length; i++) {
     //     fragmentOfCard.appendChild(renderCard(SIMILAR_ADS[i]));
     // }
@@ -368,6 +368,9 @@
             formFieldset[i].removeAttribute("disabled");
         }
 
+        for (let i = 0; i < SIMILAR_ADS.length; i++) {
+            fragmentOfPin.appendChild(renderPin(SIMILAR_ADS[i]));
+        }
         similarPinElements.appendChild(fragmentOfPin);
 
         /*-----------------------------------------*/
@@ -383,7 +386,7 @@
 
     var showCard = function () {
         var allAds = similarCardsElements.querySelectorAll(".map__card");
-        for(let k = 0; k < allAds.length; k++) {
+        for (let k = 0; k < allAds.length; k++) {
             similarCardsElements.removeChild(allAds[k]);
         }
 
@@ -405,5 +408,101 @@
     /*------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------*/
 
+    var accomodationTypeOptions = noticeForm.querySelector("#type");
+    var accomodationPrice = noticeForm.querySelector("#price");
 
+    var onTypeChange = function () {
+        for (let i = 0; i < accomodationTypeOptions.children.length; i++) {
+            if (accomodationTypeOptions.children[i].selected) {
+                switch (accomodationTypeOptions.children[i].value) {
+                    case "flat":
+                        accomodationPrice.placeholder = "1000";
+                        accomodationPrice.min = "1000";
+                        break;
+
+                    case "bungalo":
+                        accomodationPrice.placeholder = "0";
+                        accomodationPrice.min = "0";
+                        break;
+
+                    case "house":
+                        accomodationPrice.placeholder = "5000";
+                        accomodationPrice.min = "5000";
+                        break;
+
+                    case "palace":
+                        accomodationPrice.placeholder = "10000";
+                        accomodationPrice.min = "10000";
+                        break;
+
+                    default:
+                        accomodationPrice.placeholder = "0";
+                        accomodationPrice.min = "0";
+                }
+            }
+        }
+
+    };
+
+    accomodationTypeOptions.addEventListener("change", onTypeChange);
+    /*------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------*/
+
+    var timeIn = noticeForm.querySelector("#timein");
+    var timeOut = noticeForm.querySelector("#timeout");
+
+    var onTimeInChange = function () {
+        var choosenTime = 0;
+
+        for (let i = 0; i < timeIn.children.length; i++) {
+            if (timeIn.children[i].selected) {
+                choosenTime = timeIn.children[i].value;
+            }
+        }
+        for (let i = 0; i < timeOut.children.length; i++) {
+            if (timeOut.children[i].value === choosenTime) {
+                timeOut.children[i].selected = true;
+            }
+        }
+    };
+    var onTimeOutChange = function () {
+        var choosenTime = 0;
+
+        for (let i = 0; i < timeOut.children.length; i++) {
+            if (timeOut.children[i].selected) {
+                choosenTime = timeOut.children[i].value;
+            }
+        }
+        for (let i = 0; i < timeIn.children.length; i++) {
+            if (timeIn.children[i].value === choosenTime) {
+                timeIn.children[i].selected = true;
+            }
+        }
+    };
+
+    timeIn.addEventListener("change", onTimeInChange);
+    timeOut.addEventListener("change", onTimeOutChange);
+
+    /*------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------*/
+
+    var resetFormBtn = noticeForm.querySelector(".form__reset");
+    var resetForm = function() {
+        similarCardsElements.classList.add("map--faded");
+        noticeForm.classList.add("notice__form--disabled");
+        for (let i = 0; i < formFieldset.length; i++) {
+            formFieldset[i].setAttribute("disabled", "disabled");
+        }
+
+        for(let i = 1; i < pinButtons.length; i++) {
+            pinButtons[i].remove();
+        }
+
+        document.querySelector(".map__card.popup").remove();
+
+        AdressField.value = PIN_SIZE.startLocation.x + ", " + PIN_SIZE.startLocation.y;
+
+    };
+
+    resetFormBtn.addEventListener("click", resetForm);
 })();
