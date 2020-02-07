@@ -83,18 +83,22 @@
 	/*------------------------------------------------------------------------------------*/
 
 	var resetFormBtn = noticeForm.querySelector(".form__reset");
+	var AdressField = noticeForm.querySelector("#address");
+
 	var resetForm = function () {
 		map.classList.add("map--faded");
 		noticeForm.classList.add("notice__form--disabled");
-		for (let i = 0; i < formFieldset.length; i++) {
-			formFieldset[i].setAttribute("disabled", "disabled");
-		}
+		setTimeout(function () {
+			for (let i = 0; i < formFieldset.length; i++) {
+				formFieldset[i].setAttribute("disabled", "disabled");
+			}
+
+			AdressField.value = window.data.mainPinPosition.x + ", " + window.data.mainPinPosition.y;
+		}, 1);
 
 		window.map.inactive();
 
 		// document.querySelector(".map__card.popup").remove();
-
-		// AdressField.value = PIN_SIZE.startLocation.x + ", " + PIN_SIZE.startLocation.y;
 
 	};
 
@@ -108,4 +112,32 @@
 			}
 		}
 	};
+
+
+	/*--------------------------------------------------------------------------------*/
+	/*  ОТПРАВКА ДАННЫХ ИЗ ФОРМЫ  */
+
+	var onLoad = function () {
+		noticeForm.reset();
+		resetForm();
+	};
+
+	var onError = function (message) {
+		var node = document.createElement("div");
+		node.style = "z-index: 100; margin: 0 auto; text-align: center; background: #ff6547; font-size: 29px;";
+		node.style.position = "fixed";
+		node.style.color = "#ffffff";
+		node.style.left = 0;
+		node.style.right = 0;
+		node.textContent = message;
+		document.body.insertAdjacentElement("afterbegin", node);
+		setTimeout(function () {
+			document.body.removeChild(node);
+		}, 5000);
+	};
+
+	noticeForm.addEventListener("submit", function (evt) {
+		evt.preventDefault();
+		window.backend.upload(new FormData(noticeForm), onLoad, onError);
+	});
 })();
