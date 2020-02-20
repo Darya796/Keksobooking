@@ -3,28 +3,15 @@
 (function () {
 	var similarCardTemplate = document.querySelector("template").content.querySelector(".map__card");
 
+	var accomodationTypeMap = {
+		"palace": "Дворец",
+		"flat": "Квартира",
+		"house": "Дом",
+		"bungalo": "Бунгало"
+	};
+
 	var getTypeOfAccomodation = function (cardTemplate, type) {
-		var typeOfAccomodation = "";
-
-		switch (type) {
-			case "palace":
-				typeOfAccomodation = "Дворец";
-				break;
-
-			case "flat":
-				typeOfAccomodation = "Квартира";
-				break;
-
-			case "house":
-				typeOfAccomodation = "Дом";
-				break;
-
-			case "bungalo":
-				typeOfAccomodation = "Бунгало";
-				break;
-		}
-
-		return cardTemplate.querySelector(".popup__type").textContent = typeOfAccomodation;
+		cardTemplate.querySelector(".popup__type").textContent = accomodationTypeMap[type];
 	};
 
 	var getFeaturesList = function (card, cardTemplate) {

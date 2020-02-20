@@ -2,6 +2,7 @@
 
 (function () {
 	var similarPinTemplate = document.querySelector("template").content.querySelector(".map__pin");
+	var similarPinElements = document.querySelector(".map__pins");
 	var ADS_PIN_POINTER_HEIGHT = 38;
 
 	var renderPin = function (pin) {
@@ -20,13 +21,14 @@
 
 
 window.pin = {
-	addingPin: function (target) {
-		for (let i = 0; i < window.data.ads.length; i++) {
+	addingPin: function () {
+		for (let i = 0; i < 5; i++) {
+		// for (let i = 0; i < window.data.ads.length; i++) {
 			fragmentOfPin.appendChild(renderPin(window.data.ads[i]));
 		}
-		target.appendChild(fragmentOfPin);
+		similarPinElements.appendChild(fragmentOfPin);
 	},
-	adsPinPointerHeight: ADS_PIN_POINTER_HEIGHT - 1
+	adsPinPointerHeight: ADS_PIN_POINTER_HEIGHT
 };
 
 })();
