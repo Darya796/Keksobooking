@@ -1,17 +1,13 @@
 'use strict';
 
 (function () {
-	// var filtersForm = document.querySelector(".map__filters");
-	// var featuresSelect = filtersForm.querySelector("#housing-features");
-	// var featuresInputs = filtersForm.querySelectorAll("#housing-features input");
-
 
 	var ads = [];
 	var choosenType = "any";
 	var choosenPrice = "any";
 	var choosenRooms = "any";
 	var choosenGuests = "any";
-	// var choosenFeatures;
+	var choosenFeatures;
 
 	var getRank = function (ad) {
 		var rank = 0;
@@ -19,6 +15,7 @@
 		var price;
 		var rooms;
 		var guests;
+		var features;
 
 		if (choosenType !== "any") {
 			type = ad.offer.type;
@@ -78,11 +75,24 @@
 			rank += 4;
 		}
 
+		/*-----------------------------------------------------------------*/
+
+		if (choosenFeatures) {
+			features = ad.offer.features;
+
+			for(var i = 0; i < features.length; i++) {
+				for(var j = 0; j < choosenFeatures.length; j++) {
+					if (features[i] === choosenFeatures[j]) {
+						rank += 1;
+					}
+				}
+			}
+		}
+
 		return rank;
 	};
 
 	var updatePins = function () {
-		// var pinButtons = document.querySelectorAll(".map__pins .map__pin");
 
 		ads.sort(function (left, right) {
 			var rankDiff = getRank(right) - getRank(left);
@@ -93,11 +103,11 @@
 		});
 
 
-		console.log(choosenType, choosenPrice, choosenRooms, choosenGuests);
+		console.log(choosenType, choosenPrice, choosenRooms, choosenGuests, choosenFeatures);
 		console.log("------------------------------------------------------");
 
 		ads.forEach(function (it) {
-			console.log(it.offer.type, it.offer.price, it.offer.rooms, it.offer.guests);
+			console.log(it.offer.type, it.offer.price, it.offer.rooms, it.offer.guests, it.offer.features);
 		});
 
 	};
@@ -130,6 +140,14 @@
 		},
 		onGuestsChoose: function (guests, callback) {
 			choosenGuests = guests;
+			window.debounce(function () {
+				updatePins();
+				callback();
+			});
+		},
+
+		onFeaturesChoose: function (features, callback) {
+			choosenFeatures = features;
 			window.debounce(function () {
 				updatePins();
 				callback();

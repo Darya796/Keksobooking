@@ -22,8 +22,10 @@
 
 window.pin = {
 	addingPin: function () {
+
 		for (let i = 0; i < 5; i++) {
 		// for (let i = 0; i < window.data.ads.length; i++) {
+		// 	console.log(window.data.ads[i].location);
 			fragmentOfPin.appendChild(renderPin(window.data.ads[i]));
 		}
 		similarPinElements.appendChild(fragmentOfPin);

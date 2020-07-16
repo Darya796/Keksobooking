@@ -25,8 +25,6 @@
 
 
 		var clickedPinLocation = this.style.left.substring(0, this.style.left.length - 2) + ", " + (parseInt(this.style.top.substring(0, this.style.top.length - 2)) + window.pin.adsPinPointerHeight);
-		// var clickedPinLocation = this.offsetLeft + ", " + (this.offsetTop);
-		// var clickedPinLocation = this.offsetLeft + ", " + (this.offsetTop + window.pin.adsPinPointerHeight + 1);
 
 		for (var j = 0; j < window.data.ads.length; j++) {
 			var location = window.data.ads[j].location.x + ", " + window.data.ads[j].location.y;
@@ -106,6 +104,8 @@
 			var priceSelect = filtersForm.querySelector("#housing-price");
 			var roomsSelect = filtersForm.querySelector("#housing-rooms");
 			var guestsSelect = filtersForm.querySelector("#housing-guests");
+			var featuresSelect = filtersForm.querySelector("#housing-features");
+			var featuresInputs = filtersForm.querySelectorAll("#housing-features input");
 
 			var updatePinsCallback = function () {
 				for (let i = 1; i < pinButtons.length; i++) {
@@ -168,6 +168,18 @@
 				}
 			});
 
+			featuresSelect.addEventListener("change", function () {
+				var choosenFeatures = [];
+
+				for(var i = 0; i < featuresInputs.length; i++) {
+					if(featuresInputs[i].checked) {
+						choosenFeatures.push(featuresInputs[i].value);
+					}
+				}
+
+				window.filters.onFeaturesChoose(choosenFeatures, updatePinsCallback);
+			});
+
 
 			/*-----------------------------------------*/
 
@@ -180,8 +192,6 @@
 		map.addEventListener("mousemove", onMouseMove);
 		map.addEventListener("mouseup", onMouseUp);
 	});
-
-	// console.log(showCard());
 
 	/*------------------------------------------------------------------------*/
 

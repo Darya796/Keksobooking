@@ -2,9 +2,15 @@
 
 (function () {
 	var startScreenPin = document.querySelector(".map__pin--main");
+	var MAP_WIDTH = 1140;
+	var MAP_HEIGHT = 704;
 
 	var onLoad = function (data) {
-		window.data.ads = data;
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].location.x <= MAP_WIDTH && data[i].location.y <= MAP_HEIGHT) {
+				window.data.ads.push(data[i]);
+			}
+		}
 	};
 
 	var onError = function (message) {
@@ -29,6 +35,7 @@
 		mainPinPosition: {
 			"x": startScreenPin.offsetLeft,
 			"y": startScreenPin.offsetTop
-		}
+		},
+		ads: []
 	};
 })();
